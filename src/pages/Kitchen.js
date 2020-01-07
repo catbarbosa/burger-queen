@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import firebase from "../firebase";
 import "firebase/firestore";
 import ComandCard from "../component/ComandCard.js";
-// import Button from "../component/Button";
-// import MenuCard from "../component/MenuCard";
-// import Input from "../component/Input";
+import Button from "../component/Button.js";
+// import Button from "../component/Button";";
 // import { StyleSheet, css } from "aphrodite";
+
 
 function Kitchen() {
   const [comands, setComands] = useState([]);
@@ -13,6 +13,7 @@ function Kitchen() {
     firebase
       .firestore()
       .collection("comands")
+      .orderBy('time', 'asc')
       .onSnapshot(querySnapshot => {
         const clientComands = querySnapshot.docs.map(doc => {
           return { ...doc.data(), id: doc.id };
@@ -22,10 +23,18 @@ function Kitchen() {
   }, []);
   return (
     <>
-      <h1> Pedidos </h1>
+      <h1> Comandas </h1>
       <section>
         {comands.map(item => {
-          return <ComandCard key={item.id} product={item.product} price={item.price} />;
+          return (
+            <>
+              <ComandCard key={item.id} name={item.name} price={item.itens} />
+              <Button
+                title={"Concluido"}
+                handleClick={()=>console.log("Deu certo")}
+              />
+            </>
+          );
         })}
       </section>
     </>

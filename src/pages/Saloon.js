@@ -22,7 +22,7 @@ const ComandPerson = () => {
   const [breakfast, setBreakfast] = useState(true);
 
   function filterBreakfast() {
-    return menu.filter(item => item.breakfast === breakfast)
+    return menu.filter(item => item.breakfast === breakfast);
   }
 
   function addComand(e) {
@@ -49,11 +49,13 @@ const ComandPerson = () => {
       .get()
       .then(snapshot =>
         snapshot.forEach(doc => {
-          // Para adicionar os itens aos cardápios
           setMenu(currentState => [...currentState, doc.data()]);
         })
       );
   }, []);
+  const total = itens.reduce((accumulator, itens) => {
+    return accumulator + itens.price;
+  }, 0);
 
   return (
     <>
@@ -70,30 +72,34 @@ const ComandPerson = () => {
         onChange={e => setTable(e.currentTarget.value)}
       />
       <Button handleClick={addComand} title={"Enviar"} />
+      <div></div>
       <div>
-      </div>
-      <div>
-        <MenuCard 
-        product="Café da Manhã"
-        handleClick={() => setBreakfast(true)}/>
-        <MenuCard 
-        product="Menu"
-        handleClick={() => setBreakfast(false)}/>
+        <MenuCard
+          product="Café da Manhã"
+          handleClick={() => setBreakfast(true)}
+        />
+        <MenuCard product="Menu" handleClick={() => setBreakfast(false)} />
       </div>
       <div className={css(style.menuArea)}>
         {filterBreakfast().map(menuItem => (
           <MenuCard
             key={menuItem.product}
             product={menuItem.product}
-            price={menuItem.price}
+            price={"R$ " + menuItem.price + ",00"}
             handleClick={() => setItens([...itens, menuItem])}
           />
         ))}
       </div>
       <div>
         {itens.map(item => (
-          <section key={item.product}>{item.product} R${item.price},00</section>
+          <section key={item.product}>
+            <p>{item.product}</p>
+            <p>{"R$" + item.price + ",00"}</p>
+          </section>
         ))}
+      </div>
+      <div>
+        <h4>Valor Total: {"R$ " + total + ",00"}</h4>
       </div>
     </>
   );
