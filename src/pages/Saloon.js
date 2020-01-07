@@ -91,8 +91,8 @@ const ComandPerson = () => {
         ))}
       </div>
       <div>
-        {itens.map(item => (
-          <section key={item.product}>
+        {itens.map((item,index) => (
+          <section key={item.product + index}>
             <p>{item.product}</p>
             <p>{"R$" + item.price + ",00"}</p>
           </section>

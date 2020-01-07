@@ -7,6 +7,7 @@ import Button from "../component/Button.js";
 
 function Waiter() {
     const [comands, setComands] = useState([]);
+    const [status, setStatus] = useState("Pronto para entrega")
     useEffect(() => {
       firebase
         .firestore()
@@ -26,10 +27,10 @@ function Waiter() {
           {comands.map(item => {
             return (
               <>
-                <ComandCard key={item.id} name={item.name} price={item.itens} />
+                <ComandCard key={item.id} name={item.name} price={item.itens} status={status}/>
                 <Button
                   title={"Entregue"}
-                  handleClick={()=>console.log("Entregue")}
+                  handleClick={()=>setStatus("Entregue")}
                 />
               </>
             );

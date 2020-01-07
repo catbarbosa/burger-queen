@@ -3,8 +3,8 @@ import { StyleSheet, css } from "aphrodite";
 
 const style = StyleSheet.create({
   menucard: {
-    border: "1px solid black",
-    backgroundColor: "gray",
+    border: "1px solid gray",
+    backgroundColor: "#ccc",
     flexBasis: "15%",
     flexShrink: "1",
     textAlign: "center"

@@ -4,26 +4,25 @@ import { StyleSheet, css } from "aphrodite";
 const style = StyleSheet.create({
   comandcard: {
     border: "1px solid black",
-    backgroundColor: "gray",
-    width: "200px",
-    height: "250px",
-    flexBasis: "15%",
+    backgroundColor: "#ccc",
+    margin:"5px",
+    flexBasis: "10%",
     flexShrink: "1",
     textAlign: "center"
   }
 });
 const ComandCard = props => (
-  <div className ={css(style.comandcard)}>
+  <div className={css(style.comandcard)}>
     <p>{props.name}</p>
     {props.price.map(element => {
-      return( 
+      return (
         <>
-        <p>{element.product}</p>
-        <p>{element.price}</p>
+          <p>{element.product}</p>
+          <p>{"R$" + element.price + ",00"}</p>
         </>
-        )
-      ;
+      );
     })}
+    <p>{props.status}</p>
   </div>
 );
 export default ComandCard;
