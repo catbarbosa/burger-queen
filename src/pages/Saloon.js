@@ -21,18 +21,39 @@ const ComandPerson = () => {
   const [menu, setMenu] = useState([]);
   const [breakfast, setBreakfast] = useState(true);
 
-  function filterBreakfast() {
+  const filterBreakfast = () => {
     return menu.filter(item => item.breakfast === breakfast);
-  }
+  };
 
-  function addComand(e) {
+  const setComandItem = (menuItem, quantity) => {
+    const index = itens.findIndex(item => item.id === menuItem.id);
+    if (index !== -1) {
+      let item = itens[index];
+      item.quantity += quantity;
+
+      if (item.quantity > 0) {
+        itens[index] = item;
+      } else {
+        itens.splice(index, 1);
+      }
+
+      setItens([...itens]);
+    } else {
+      menuItem.quantity = 1;
+      setItens([...itens, menuItem]);
+    }
+  };
+
+  const addComand = e => {
     e.preventDefault();
     const fieldValue = firebase.firestore.FieldValue;
     const comand = {
       name,
       table,
       itens,
-      time: fieldValue.serverTimestamp()
+      status: "",
+      startTime: fieldValue.serverTimestamp(),
+      endTime: null
     };
     db.collection("comands")
       .add(comand)
@@ -41,7 +62,7 @@ const ComandPerson = () => {
         setTable("");
         setItens([]);
       });
-  }
+  };
   useEffect(() => {
     firebase
       .firestore()
@@ -49,17 +70,37 @@ const ComandPerson = () => {
       .get()
       .then(snapshot =>
         snapshot.forEach(doc => {
-          setMenu(currentState => [...currentState, doc.data()]);
+          setMenu(currentState => [
+            ...currentState,
+            { ...doc.data(), id: doc.id }
+          ]);
         })
       );
   }, []);
-  const total = itens.reduce((accumulator, itens) => {
-    return accumulator + itens.price;
+  const total = itens.reduce((accumulator, item) => {
+    return accumulator + item.price;
   }, 0);
 
   return (
     <>
       <label htmlFor="name">Comanda</label>
+      <div>
+        <MenuCard
+          product="Café da Manhã"
+          handleClick={() => setBreakfast(true)}
+        />
+        <MenuCard product="Menu" handleClick={() => setBreakfast(false)} />
+      </div>
+      <div className={css(style.menuArea)}>
+        {filterBreakfast().map((menuItem, index) => (
+          <MenuCard
+            key={index}
+            product={menuItem.product}
+            price={"R$ " + menuItem.price + ",00"}
+            handleClick={() => setComandItem(menuItem, 1)}
+          />
+        ))}
+      </div>
       <Input
         placeholder="Nome"
         defaultValue={name}
@@ -72,28 +113,15 @@ const ComandPerson = () => {
         onChange={e => setTable(e.currentTarget.value)}
       />
       <Button handleClick={addComand} title={"Enviar"} />
-      <div></div>
       <div>
-        <MenuCard
-          product="Café da Manhã"
-          handleClick={() => setBreakfast(true)}
-        />
-        <MenuCard product="Menu" handleClick={() => setBreakfast(false)} />
-      </div>
-      <div className={css(style.menuArea)}>
-        {filterBreakfast().map(menuItem => (
-          <MenuCard
-            key={menuItem.product}
-            product={menuItem.product}
-            price={"R$ " + menuItem.price + ",00"}
-            handleClick={() => setItens([...itens, menuItem])}
-          />
-        ))}
-      </div>
-      <div>
-        {itens.map((item,index) => (
-          <section key={item.product + index}>
+        {itens.map((item, index) => (
+          <section key={index}>
             <p>{item.product}</p>
+            <p>
+              {item.quantity}
+              <Button handleClick={() => setComandItem(item, -1)} title={"-"} />
+              <Button handleClick={() => setComandItem(item, 1)} title={"+"} />
+            </p>
             <p>{"R$" + item.price + ",00"}</p>
           </section>
         ))}

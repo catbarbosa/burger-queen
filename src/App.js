@@ -26,7 +26,6 @@ function App() {
           />
           <Route
             className={css(style.link)}
-            exact
             path="/kitchen"
             component={Kitchen}
           />

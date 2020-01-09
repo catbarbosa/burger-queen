@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import firebase from "../firebase";
 import "firebase/firestore";
 import ComandCard from "../component/ComandCard.js";
-import Button from "../component/Button.js";
 import { StyleSheet, css } from "aphrodite";
 
 const style = StyleSheet.create({
@@ -13,7 +12,7 @@ const style = StyleSheet.create({
 });
 function Kitchen() {
   const [comands, setComands] = useState([]);
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("Pendente");
   useEffect(() => {
     firebase
       .firestore()
@@ -30,22 +29,17 @@ function Kitchen() {
     <>
       <h1> Comandas </h1>
       <section className={css(style.comandArea)}>
-        {comands.map((item, index) => {
-          return (
-            <>
+        {comands.map((item, index) => (
               <ComandCard
-                key={item.id + index}
+                key={index}
                 name={item.name}
                 price={item.itens}
                 status={status}
-              />
-              <Button
                 title={"Concluido"}
                 handleClick={() => setStatus("Pronto para entrega")}
               />
-            </>
-          );
-        })}
+          )
+        )}
       </section>
     </>
   );
