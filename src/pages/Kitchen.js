@@ -12,12 +12,12 @@ const style = StyleSheet.create({
 });
 function Kitchen() {
   const [comands, setComands] = useState([]);
-  const [status, setStatus] = useState("Pendente");
+
   useEffect(() => {
     firebase
       .firestore()
       .collection("comands")
-      .orderBy("time", "asc")
+      .orderBy("startTime", "asc")
       .onSnapshot(querySnapshot => {
         const clientComands = querySnapshot.docs.map(doc => {
           return { ...doc.data(), id: doc.id };
@@ -25,21 +25,32 @@ function Kitchen() {
         setComands(clientComands);
       });
   }, []);
+  const getEndtime = (id) => {
+    const date = new Date().getTime();
+
+    firebase
+      .firestore()
+      .collection("comands")
+      .doc(id)
+      .update({
+        endTime: date,
+        status: "finished"
+      });
+  };
   return (
     <>
       <h1> Comandas </h1>
       <section className={css(style.comandArea)}>
         {comands.map((item, index) => (
-              <ComandCard
-                key={index}
-                name={item.name}
-                price={item.itens}
-                status={status}
-                title={"Concluido"}
-                handleClick={() => setStatus("Pronto para entrega")}
-              />
-          )
-        )}
+          <ComandCard
+            key={index}
+            name={item.name}
+            itens={item.itens}
+            status={item.status}
+            title={"Concluido"}
+            handleClick={() => getEndtime(item.id)}
+          />
+        ))}
       </section>
     </>
   );

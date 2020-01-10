@@ -15,18 +15,22 @@ const style = StyleSheet.create({
 
 const ComandPerson = () => {
   const db = firebase.firestore();
+  const date = new Date().getTime();
   const [name, setName] = useState("");
   const [table, setTable] = useState("");
   const [itens, setItens] = useState([]);
   const [menu, setMenu] = useState([]);
   const [breakfast, setBreakfast] = useState(true);
+  const [modal, setModal] = useState({ status: false });
+  const [option, setOption] = useState("");
+  const [extras, setExtras] = useState("");
 
   const filterBreakfast = () => {
     return menu.filter(item => item.breakfast === breakfast);
   };
 
   const setComandItem = (menuItem, quantity) => {
-    const index = itens.findIndex(item => item.id === menuItem.id);
+    const index = itens.findIndex(item => item.product === menuItem.product);
     if (index !== -1) {
       let item = itens[index];
       item.quantity += quantity;
@@ -44,15 +48,38 @@ const ComandPerson = () => {
     }
   };
 
+  const verifyOptions = menuItem => {
+    if (menuItem.option && menuItem.extras !== -1) {
+      setModal({ status: true, item: menuItem });
+    } else {
+      setComandItem(menuItem, 1);
+    }
+  };
+
+  const addOptionExtras = () => {
+    const updatedItem = {
+      ...modal.item,
+      product: `${modal.item.product} de ${option} com ${extras}`
+    };
+    setComandItem(updatedItem);
+    setModal({status: false})
+  };
+
+  // const STATUS = {
+  //   "pending": "Pendente"
+  // }
+
+  // STATUS[item.status]
+  // Object.keys(STATUS)[0]
+
   const addComand = e => {
     e.preventDefault();
-    const fieldValue = firebase.firestore.FieldValue;
     const comand = {
       name,
       table,
       itens,
-      status: "",
-      startTime: fieldValue.serverTimestamp(),
+      status: "pending",
+      startTime: date,
       endTime: null
     };
     db.collection("comands")
@@ -97,7 +124,7 @@ const ComandPerson = () => {
             key={index}
             product={menuItem.product}
             price={"R$ " + menuItem.price + ",00"}
-            handleClick={() => setComandItem(menuItem, 1)}
+            handleClick={() => verifyOptions(menuItem)}
           />
         ))}
       </div>
@@ -113,13 +140,44 @@ const ComandPerson = () => {
         onChange={e => setTable(e.currentTarget.value)}
       />
       <Button handleClick={addComand} title={"Enviar"} />
+      {modal.status ? (
+        <div>
+          <h3>Opções</h3>
+          {modal.item.option.map((element, index) => (
+            <div key={index}>
+              <input
+                onChange={() => setOption(element)}
+                type="radio"
+                name="option"
+                value={element}
+              />
+              <label>{element}</label>
+            </div>
+          ))}  
+          <h3>Extras</h3>
+          {modal.item.extras.map((element, index) => (
+            <div key={index}>
+              <input
+                onChange={() => setExtras(element)}
+                type="radio"
+                name="extras"
+                value={element}
+              />
+              <label>{element}</label>
+            </div>
+          ))}
+          <Button handleClick={addOptionExtras} title={"Adicionar"} />
+        </div>
+      ) : (
+        false
+      )}
       <div>
         {itens.map((item, index) => (
           <section key={index}>
             <p>{item.product}</p>
             <p>
-              {item.quantity}
               <Button handleClick={() => setComandItem(item, -1)} title={"-"} />
+              {item.quantity}
               <Button handleClick={() => setComandItem(item, 1)} title={"+"} />
             </p>
             <p>{"R$" + item.price + ",00"}</p>

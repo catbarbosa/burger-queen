@@ -5,7 +5,7 @@ const style = StyleSheet.create({
   comandcard: {
     border: "1px solid black",
     backgroundColor: "#ccc",
-    margin: "5px",
+    margin: "2px",
     flexBasis: "10%",
     flexShrink: "1",
     textAlign: "center"
@@ -16,15 +16,16 @@ const ComandCard = props => (
     <p>{props.name}</p>
     <p>{props.status}</p>
     <ul>
-    {props.price.map((element, index) => {
+    {props.itens.map((element, index) => {
       return (
         <li key={index}>
           <p>{element.product}</p>
-          <p>{"R$" + element.price + ",00"}</p>
+          <p>{element.quantity}</p>
         </li>
       );
     })}
     </ul>
+    <p>{props.product}</p>
     <button onClick={props.handleClick}>{props.title}</button>
   </div>
 );

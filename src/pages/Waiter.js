@@ -6,33 +6,34 @@ import ComandCard from "../component/ComandCard.js";
 
 function Waiter() {
   const [comands, setComands] = useState([]);
-  const [status, setStatus] = useState("Pronto para entrega");
   useEffect(() => {
     firebase
       .firestore()
       .collection("comands")
-      .orderBy("time", "asc")
+      .orderBy("startTime", "asc")
       .onSnapshot(querySnapshot => {
         const clientComands = querySnapshot.docs.map(doc => {
-          return {...doc.data(), id: doc.id };
+          return { ...doc.data(), id: doc.id };
         });
         setComands(clientComands);
       });
   }, []);
+  // const totalTime = new Date(endTime - startTime)
   return (
     <>
       <h1> Comandas </h1>
       <section>
-        {comands.map((item, index) => {
+        
+        {comands.filter((item)=> item.status === "finished").map((item, index) => {
           return (
-              <ComandCard
-                key={index}
-                name={item.name}
-                price={item.itens}
-                status={status}
-                title={"Entregue"}
-                handleClick={() => setStatus("Entregue")}
-              />
+            <ComandCard
+              key={index}
+              name={item.name}
+              itens={item.itens}
+              status={item.status}
+              title={"Entregue"}
+              handleClick={_ => _}
+            />
           );
         })}
       </section>
