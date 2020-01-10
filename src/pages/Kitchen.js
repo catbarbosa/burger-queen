@@ -25,8 +25,12 @@ function Kitchen() {
         setComands(clientComands);
       });
   }, []);
-  const getEndtime = (id) => {
-    const date = new Date().getTime();
+  const getEndtime = id => {
+    const date = new Date().toTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
+    });
 
     firebase
       .firestore()
@@ -39,18 +43,35 @@ function Kitchen() {
   };
   return (
     <>
-      <h1> Comandas </h1>
+      <h1> Comandas - Cozinha</h1>
       <section className={css(style.comandArea)}>
-        {comands.map((item, index) => (
-          <ComandCard
-            key={index}
-            name={item.name}
-            itens={item.itens}
-            status={item.status}
-            title={"Concluido"}
-            handleClick={() => getEndtime(item.id)}
-          />
-        ))}
+        {comands
+          .filter(item => item.status === "pending")
+          .map((item, index) => (
+            <ComandCard
+              key={index}
+              name={"Nome do Cliente: " + item.name}
+              status={"Status: " + item.status}
+              table={"Mesa: " + item.table}
+              itens={item.itens}
+              priceTotal={"Preço total: R$" + item.priceTotal + ",00"}
+              handleClick={() => getEndtime(item.id)}
+            />
+          ))}
+      </section>
+      <h2>Histórico de Pedidos</h2>
+      <section className={css(style.comandArea)}>
+        {comands
+          .map((item, index) => (
+            <ComandCard
+              key={index}
+              name={"Nome do Cliente: " + item.name}
+              status={"Status: " + item.status}
+              table={"Mesa: " + item.table}
+              itens={item.itens}
+              priceTotal={"Preço total: R$" + item.priceTotal + ",00"}
+            />
+          ))}
       </section>
     </>
   );

@@ -15,7 +15,11 @@ const style = StyleSheet.create({
 
 const ComandPerson = () => {
   const db = firebase.firestore();
-  const date = new Date().getTime();
+  const date = new Date().toLocaleDateString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  });
   const [name, setName] = useState("");
   const [table, setTable] = useState("");
   const [itens, setItens] = useState([]);
@@ -56,21 +60,26 @@ const ComandPerson = () => {
     }
   };
 
-  const addOptionExtras = () => {
-    const updatedItem = {
-      ...modal.item,
-      product: `${modal.item.product} de ${option} com ${extras}`
-    };
-    setComandItem(updatedItem);
-    setModal({status: false})
+  const addOptionExtras = item => {
+    if (extras !== "Sem Extra") {
+      const updatedItem = {
+        ...modal.item,
+        price: modal.item.price + 1,
+        product: `${modal.item.product} de ${option} com ${extras}`
+      };
+      setComandItem(updatedItem);
+      setModal({ status: false });
+    } else {
+      const updatedItem = {
+        ...modal.item,
+        product: `${modal.item.product} de ${option} ${extras}`
+      };
+      setComandItem(updatedItem);
+      setModal({ status: false });
+    }
+    setOption("");
+    setExtras("");
   };
-
-  // const STATUS = {
-  //   "pending": "Pendente"
-  // }
-
-  // STATUS[item.status]
-  // Object.keys(STATUS)[0]
 
   const addComand = e => {
     e.preventDefault();
@@ -78,6 +87,7 @@ const ComandPerson = () => {
       name,
       table,
       itens,
+      priceTotal: total,
       status: "pending",
       startTime: date,
       endTime: null
@@ -105,7 +115,7 @@ const ComandPerson = () => {
       );
   }, []);
   const total = itens.reduce((accumulator, item) => {
-    return accumulator + item.price;
+    return accumulator + item.price * item.quantity;
   }, 0);
 
   return (
@@ -149,11 +159,12 @@ const ComandPerson = () => {
                 onChange={() => setOption(element)}
                 type="radio"
                 name="option"
+                checked={element === option}
                 value={element}
               />
               <label>{element}</label>
             </div>
-          ))}  
+          ))}
           <h3>Extras</h3>
           {modal.item.extras.map((element, index) => (
             <div key={index}>
@@ -161,6 +172,7 @@ const ComandPerson = () => {
                 onChange={() => setExtras(element)}
                 type="radio"
                 name="extras"
+                checked={element.extras}
                 value={element}
               />
               <label>{element}</label>

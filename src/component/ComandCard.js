@@ -12,21 +12,21 @@ const style = StyleSheet.create({
   }
 });
 const ComandCard = props => (
-  <div className={css(style.comandcard)}>
+  <div className={css(style.comandcard)} onClick={props.handleClick}>
     <p>{props.name}</p>
+    <p>{props.table}</p>
     <p>{props.status}</p>
     <ul>
-    {props.itens.map((element, index) => {
-      return (
-        <li key={index}>
-          <p>{element.product}</p>
-          <p>{element.quantity}</p>
-        </li>
-      );
-    })}
+      {props.itens.map((element, index) => {
+        return (
+          <li key={index}>
+            <p>{element.product}: {element.quantity}</p>
+          </li>
+        );
+      })}
     </ul>
+    <p>{props.priceTotal}</p>
     <p>{props.product}</p>
-    <button onClick={props.handleClick}>{props.title}</button>
   </div>
 );
 export default ComandCard;
