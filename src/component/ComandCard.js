@@ -26,12 +26,6 @@ const style = StyleSheet.create({
     borderRadius: "5px",
     margin: "1px"
   },
-  pOnion: {
-    backgroundColor: "#F2F2F2",
-    borderRadius: "10px",
-    margin: "1px",
-    padding: "2px"
-  },
   containerUl: {
     margin: "0",
     padding: "0"
@@ -79,9 +73,9 @@ const ComandCard = props => (
     </ul>
     <p
       className={css(
-        props.status === "pending" && style.pCheese,
-        props.status === "finished" && style.pLettuce,
-        props.status === "delivered" && style.pTomate
+        props.status === "pending" && style.pTomate,
+        props.status === "finished" && style.pCheese,
+        props.status === "delivered" && style.pLettuce
       )}
     >
       {props.status}
