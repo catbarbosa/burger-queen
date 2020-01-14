@@ -8,9 +8,16 @@ const style = StyleSheet.create({
   comandArea: {
     display: "flex",
     flexWrap: "wrap"
+  },
+  containerHistoric: {
+    border: "1px solid #ccc",
+    borderRadius: "5px",
+    padding: "5px",
+    margin: "3px"
   }
 });
-function Kitchen() {
+
+const Kitchen = () => {
   const [comands, setComands] = useState([]);
 
   useEffect(() => {
@@ -25,6 +32,7 @@ function Kitchen() {
         setComands(clientComands);
       });
   }, []);
+
   const getEndtime = id => {
     const date = new Date().toTimeString("pt-BR", {
       hour: "2-digit",
@@ -41,39 +49,44 @@ function Kitchen() {
         status: "finished"
       });
   };
+
   return (
-    <>
+    <div>
       <h1> Comandas - Cozinha</h1>
       <section className={css(style.comandArea)}>
         {comands
           .filter(item => item.status === "pending")
-          .map((item, index) => (
-            <ComandCard
-              key={index}
-              name={"Nome do Cliente: " + item.name}
-              status={"Status: " + item.status}
-              table={"Mesa: " + item.table}
-              itens={item.itens}
-              priceTotal={"Preço total: R$" + item.priceTotal + ",00"}
-              handleClick={() => getEndtime(item.id)}
-            />
-          ))}
+          .map((item, index) => {
+            return (
+              <ComandCard
+                key={index}
+                name={"Cliente: " + item.name}
+                status={item.status}
+                table={"Mesa: " + item.table}
+                itens={item.itens}
+                handleClick={() => getEndtime(item.id)}
+              />
+            );
+          })}
       </section>
-      <h2>Histórico de Pedidos</h2>
-      <section className={css(style.comandArea)}>
-        {comands
-          .map((item, index) => (
-            <ComandCard
-              key={index}
-              name={"Nome do Cliente: " + item.name}
-              status={"Status: " + item.status}
-              table={"Mesa: " + item.table}
-              itens={item.itens}
-              priceTotal={"Preço total: R$" + item.priceTotal + ",00"}
-            />
-          ))}
-      </section>
-    </>
+      <div className={css(style.containerHistoric)}>
+        <h2>Histórico de Pedidos</h2>
+        <section className={css(style.comandArea)}>
+          {comands
+            .filter(item => item.status !== "pending")
+            .map((item, index) => (
+              <ComandCard
+                key={index}
+                name={"Cliente: " + item.name}
+                status={item.status}
+                table={"Mesa: " + item.table}
+                itens={item.itens}
+                priceTotal={"Total: R$" + item.priceTotal + ",00"}
+              />
+            ))}
+        </section>
+      </div>
+    </div>
   );
-}
+};
 export default Kitchen;

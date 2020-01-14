@@ -3,18 +3,23 @@ import { StyleSheet, css } from "aphrodite";
 
 const style = StyleSheet.create({
   menucard: {
-    border: "1px solid gray",
-    backgroundColor: "#ccc",
-    flexBasis: "15%",
-    flexShrink: "1",
-    textAlign: "center"
+    cursor: "pointer",
+    margin: "5px",
+    border: "0 none",
+    height: "100px",
+    flex: "2 1 auto",
+    minWidth: 170,
+    backgroundColor: "#8DBF41",
+    textAlign: "center",
+    verticalAlign: "middle"
   }
 });
 
 const MenuCard = props => (
-  <section className={css(style.menucard)} onClick={props.handleClick}>
-    <p>{props.product}</p>
-    <p>{props.price}</p>
-  </section>
-)
+  <button className={css(style.menucard)} onClick={props.handleClick}>
+    {props.product}
+    <br />
+    {props.price}
+  </button>
+);
 export default MenuCard;

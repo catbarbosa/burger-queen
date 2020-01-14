@@ -51,11 +51,11 @@ function Waiter() {
             return (
               <ComandCard
                 key={index}
-                name={"Nome do Cliente: " + item.name}
-                status={"Status: " + item.status}
+                name={"Cliente: " + item.name}
+                status={item.status}
                 table={"Mesa: " + item.table}
                 itens={item.itens}
-                priceTotal={"Preço total: R$" + item.priceTotal + ",00"}
+                priceTotal={"Total: R$" + item.priceTotal + ",00"}
                 handleClick={() => getTotalTime(item.id)}
               />
             );
@@ -67,11 +67,11 @@ function Waiter() {
           return (
             <ComandCard
               key={index}
-              name={"Nome do Cliente: " + item.name}
-              status={"Status: " + item.status}
+              name={"Cliente: " + item.name}
+              status={ item.status}
               table={"Mesa: " + item.table}
               itens={item.itens}
-              priceTotal={"Preço total: R$" + item.priceTotal + ",00"}
+              priceTotal={"Total: R$" + item.priceTotal + ",00"}
             />
           );
         })}
