@@ -3,7 +3,7 @@
 ## Índice
 
 - [1. Resumo](#1-resumo)
-- [2. Objetivos de aprendizagem](#2-objetivos-de-aprendizagem)
+- [2. Objetivo](#2-objetivo)
 - [3. História de Usuário](#3-história-de-usuário)
 - [4. Ferramentas](#4-ferramentas)
 
