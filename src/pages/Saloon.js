@@ -54,7 +54,14 @@ const style = StyleSheet.create({
   },
   btnPlusMinus: {
     width: 50,
-    margin: "0 5px"
+    margin: "0 5px",
+    padding:"7px"
+  },
+  input: {
+    margin: "5px",
+    border: "1px solid black",
+    width: "140px",
+    height: "30px"
   }
 });
 
@@ -65,14 +72,14 @@ const ComandPerson = () => {
     minute: "2-digit",
     second: "2-digit"
   });
-  const [name, setName] = useState("");
-  const [table, setTable] = useState("");
+  const [name, setName] = useState(null);
+  const [table, setTable] = useState(null);
   const [itens, setItens] = useState([]);
   const [menu, setMenu] = useState([]);
   const [breakfast, setBreakfast] = useState(true);
   const [modal, setModal] = useState({ status: false });
-  const [option, setOption] = useState("");
-  const [extras, setExtras] = useState("");
+  const [option, setOption] = useState(null);
+  const [extras, setExtras] = useState(null);
 
   const ButtonPlusMinus = props => (
     <button className={css(style.btnPlusMinus)} {...props} />
@@ -110,6 +117,11 @@ const ComandPerson = () => {
   };
 
   const addOptionExtras = item => {
+    if (!option || !extras) {
+      alert("Selecione uma opção e um extra");
+      return false;
+    }
+
     const updatedItem = { ...item };
 
     if (extras !== "Sem Extra") {
@@ -121,12 +133,16 @@ const ComandPerson = () => {
 
     setComandItem(updatedItem, 1);
     setModal({ status: false });
-    setOption("");
-    setExtras("");
+    setOption(null);
+    setExtras(null);
   };
 
   const addComand = e => {
     e.preventDefault();
+    if (!name || !table) {
+      alert("Preencha Nome e Mesa");
+      return false;
+    }
     const comand = {
       name,
       table,
@@ -136,12 +152,11 @@ const ComandPerson = () => {
       startTime: date,
       endTime: null
     };
-    console.log(comand);
     db.collection("comands")
       .add(comand)
       .then(() => {
-        setName("");
-        setTable("");
+        setName(null);
+        setTable(null);
         setItens([]);
       });
   };
@@ -191,11 +206,13 @@ const ComandPerson = () => {
       </div>
       <section className={css(style.containerComand)}>
         <Input
+          className={css(style.input)}
           placeholder="Nome"
           defaultValue={name}
           onChange={e => setName(e.currentTarget.value)}
         />
         <Input
+          className={css(style.input)}
           placeholder="Mesa"
           type="number"
           defaultValue={table}
@@ -209,7 +226,7 @@ const ComandPerson = () => {
               <h3>Opções</h3>
               {modal.item.option.map((item, index) => (
                 <div key={index}>
-                  <input
+                  <Input
                     onChange={() => setOption(item)}
                     type="radio"
                     name="option"
@@ -223,7 +240,7 @@ const ComandPerson = () => {
               <h3>Extras</h3>
               {modal.item.extras.map((item, index) => (
                 <div key={index}>
-                  <input
+                  <Input
                     onChange={() => setExtras(item)}
                     type="radio"
                     name="extras"
